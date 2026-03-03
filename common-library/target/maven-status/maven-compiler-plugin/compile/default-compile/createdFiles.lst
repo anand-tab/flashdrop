@@ -1,0 +1,7 @@
+com/flashdrop/common/constants/KafkaTopics.class
+com/flashdrop/common/enums/UserRole.class
+com/flashdrop/common/events/OrderCreatedEvent.class
+com/flashdrop/common/enums/OrderStatus.class
+com/flashdrop/common/events/BaseEvent.class
+com/flashdrop/common/events/OrderResultEvent.class
+com/flashdrop/common/events/StockUpdatedEvent.class
