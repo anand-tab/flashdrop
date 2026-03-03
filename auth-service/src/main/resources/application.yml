@@ -1,0 +1,18 @@
+server:
+  port: 3001
+
+spring:
+  datasource:
+    url: jdbc:postgresql://localhost:5432/authServiceDb
+    username: postgres
+    password: somu
+    driver-class-name: org.postgresql.Driver
+
+  jpa:
+    hibernate:
+      ddl-auto: update
+    show-sql: true
+
+jwt:
+  secret: 9fKx3LqP7mZtR2vX8nBcY5wHsU4jQa1eTf6GdWp0rTy9UiOlVk3Nz7MhSe2AxCd
+  expiration: 3600000
