@@ -1,1 +1,8 @@
 /Users/sumanshuanand/Documents/flashdrop/user-service/src/main/java/com/flashdrop/userService/UserServiceApplication.java
+/Users/sumanshuanand/Documents/flashdrop/user-service/src/main/java/com/flashdrop/userService/controller/UserController.java
+/Users/sumanshuanand/Documents/flashdrop/user-service/src/main/java/com/flashdrop/userService/dto/UserMapper.java
+/Users/sumanshuanand/Documents/flashdrop/user-service/src/main/java/com/flashdrop/userService/dto/UserRequest.java
+/Users/sumanshuanand/Documents/flashdrop/user-service/src/main/java/com/flashdrop/userService/dto/UserResponse.java
+/Users/sumanshuanand/Documents/flashdrop/user-service/src/main/java/com/flashdrop/userService/entity/User.java
+/Users/sumanshuanand/Documents/flashdrop/user-service/src/main/java/com/flashdrop/userService/repository/UserRepository.java
+/Users/sumanshuanand/Documents/flashdrop/user-service/src/main/java/com/flashdrop/userService/service/UserService.java

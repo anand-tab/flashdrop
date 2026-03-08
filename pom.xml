@@ -14,6 +14,8 @@
         <module>common-library</module>
         <module>user-service</module>
         <module>auth-service</module>
+        <module>apiGateway</module>
+        <module>product-service</module>
     </modules>
 
     <!-- 👇 This makes child modules inherit Spring Boot version -->

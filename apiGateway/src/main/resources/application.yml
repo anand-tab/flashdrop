@@ -1,0 +1,24 @@
+server:
+  port: 3002
+
+spring:
+  cloud:
+    gateway:
+      discovery:
+        locator:
+          enabled: true
+          lower-case-service-id: true
+      routes:
+
+      - id: user-service
+        uri: http://localhost:3000
+        predicates:
+          - Path=/api/users/**
+
+      - id: auth-service
+        uri: http://localhost:3001
+        predicates:
+          - Path=/api/auth/**
+
+jwt:
+  secret: 9fKx3LqP7mZtR2vX8nBcY5wHsU4jQa1eTf6GdWp0rTy9UiOlVk3Nz7MhSe2AxCd

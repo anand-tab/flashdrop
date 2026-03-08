@@ -2,6 +2,8 @@ server:
   port: 3001
 
 spring:
+  application:
+    name: auth-service
   datasource:
     url: jdbc:postgresql://localhost:5432/authServiceDb
     username: postgres
