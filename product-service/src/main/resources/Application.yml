@@ -1,0 +1,16 @@
+server:
+  port: 3003
+
+spring:
+  application:
+    name: auth-service
+  datasource:
+    url: jdbc:postgresql://localhost:5432/productServiceDb
+    username: postgres
+    password: somu
+    driver-class-name: org.postgresql.Driver
+
+  jpa:
+    hibernate:
+      ddl-auto: update
+    show-sql: true
