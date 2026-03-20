@@ -9,6 +9,8 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
+import static org.springframework.data.jpa.domain.AbstractPersistable_.id;
+
 @RestController
 @RequestMapping("/api/product")
 public class ProductController {
@@ -27,5 +29,11 @@ public class ProductController {
     public ResponseEntity<List<ProductResponse>> getAllProducts(){
 
         return ResponseEntity.ok(productService.getAllProduct());
+    }
+
+
+    @GetMapping("/{id}")
+    public ResponseEntity<ProductResponse> getProductById(@PathVariable String productId){
+        return ResponseEntity.ok(productService.getProductById(productId));
     }
 }
