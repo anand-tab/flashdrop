@@ -37,11 +37,21 @@ public class ProductService {
 
     public ProductResponse getProductById(String productId) {
 
-        Products products = productRepository.findProductId(productId);
+        Products products = productRepository.findByProductId(productId);
 
 
-        ProductResponse productResponse = new ProductResponse();
+        ProductResponse productResponse = productMapper.toProductResponse(products);
+
+
         return productResponse;
+
+    }
+
+    public List<ProductResponse> getAllProductsByCategory(String category) {
+        List<Products> products = productRepository.getByCategory(category).orElseThrow(()-> new RuntimeException("Could not find product by category"+ category));
+
+        List<ProductResponse> productResponseList = productMapper.toProductResponseList(products);
+        return productResponseList;
 
     }
 }

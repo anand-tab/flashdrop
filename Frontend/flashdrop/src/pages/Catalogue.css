@@ -1,0 +1,166 @@
+/* PAGE */
+.catalogue {
+  background-color: #0d0d0d;
+  color: white;
+  min-height: 100vh;
+  padding: 20px;
+  font-family: Arial, sans-serif;
+}
+
+/* NAVBAR */
+.navbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.logo {
+  height: 100px;
+  color: #bbb;
+}
+
+.search-bar {
+  width: 40%;
+  height: 50px;
+  padding: 10px;
+  border-radius: 20px;
+  border: none;
+  background: #1a1a1a;
+  color: white;
+}
+
+/* NAV ICONS */
+.nav-icons {
+  display: flex;
+  align-items: center;
+  gap: 15px;
+}
+
+.cart {
+  font-size: 18px;
+}
+
+/* USER DROPDOWN */
+.user-menu {
+  position: relative;
+}
+
+.user-name {
+  cursor: pointer;
+  font-size: 14px;
+}
+
+.dropdown {
+  position: absolute;
+  top: 35px;
+  right: 0;
+  background: #1a1a1a;
+  border: 1px solid #333;
+  border-radius: 8px;
+  width: 140px;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.5);
+}
+
+.dropdown div {
+  padding: 10px;
+  cursor: pointer;
+}
+
+.dropdown div:hover {
+  background: #333;
+}
+
+/* CATEGORIES */
+.categories {
+  margin: 20px 0;
+  display: flex;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+
+.category {
+  padding: 8px 15px;
+  border-radius: 20px;
+  background: #1a1a1a;
+  cursor: pointer;
+  font-size: 14px;
+}
+
+.category:hover {
+  background: #333;
+}
+
+/* HERO */
+.hero {
+  background: linear-gradient(135deg, #2b2b2b, #1a1a1a);
+  padding: 40px;
+  border-radius: 15px;
+  margin-bottom: 30px;
+}
+
+.hero h1 {
+  font-size: 32px;
+}
+
+.hero p {
+  margin: 10px 0;
+  color: #ccc;
+}
+
+.hero button {
+  padding: 10px 20px;
+  border-radius: 8px;
+  border: none;
+  background: #444;
+  color: white;
+  cursor: pointer;
+}
+
+.hero button:hover {
+  background: #666;
+}
+
+/* PRODUCTS */
+.section-title {
+  margin-bottom: 20px;
+}
+
+.products {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+  gap: 20px;
+}
+
+/* CARD */
+.card {
+  background: #1a1a1a;
+  border-radius: 10px;
+  overflow: hidden;
+  padding: 10px;
+  transition: transform 0.2s;
+}
+
+.card:hover {
+  transform: scale(1.03);
+}
+
+.card img {
+  width: 100%;
+  height: 150px;
+  object-fit: cover;
+  border-radius: 10px;
+}
+
+.card h3 {
+  font-size: 16px;
+  margin: 10px 0;
+}
+
+.rating {
+  color: #bbb;
+}
+
+.price {
+  color: #ddd;
+  font-weight: bold;
+}

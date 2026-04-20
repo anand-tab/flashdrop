@@ -8,27 +8,14 @@ import org.springframework.stereotype.Component;
 
 @Generated(
     value = "org.mapstruct.ap.MappingProcessor",
-    date = "2026-03-17T20:59:54+0530",
+    date = "2026-04-19T16:13:32+0530",
     comments = "version: 1.5.5.Final, compiler: javac, environment: Java 21.0.8 (Oracle Corporation)"
 )
 @Component
 public class ProductMapperImpl implements ProductMapper {
 
     @Override
-    public List<ProductResponse> toProductResponseList(List<Products> products) {
-        if ( products == null ) {
-            return null;
-        }
-
-        List<ProductResponse> list = new ArrayList<ProductResponse>( products.size() );
-        for ( Products products1 : products ) {
-            list.add( productsToProductResponse( products1 ) );
-        }
-
-        return list;
-    }
-
-    protected ProductResponse productsToProductResponse(Products products) {
+    public ProductResponse toProductResponse(Products products) {
         if ( products == null ) {
             return null;
         }
@@ -45,5 +32,19 @@ public class ProductMapperImpl implements ProductMapper {
         productResponse.rating( products.getRating() );
 
         return productResponse.build();
+    }
+
+    @Override
+    public List<ProductResponse> toProductResponseList(List<Products> products) {
+        if ( products == null ) {
+            return null;
+        }
+
+        List<ProductResponse> list = new ArrayList<ProductResponse>( products.size() );
+        for ( Products products1 : products ) {
+            list.add( toProductResponse( products1 ) );
+        }
+
+        return list;
     }
 }

@@ -1,0 +1,150 @@
+.buy-page {
+    min-height: 100vh;
+    background: #111;
+    color: white;
+}
+
+.buy-header {
+    padding: 20px 40px;
+    background: #1a1a1a;
+    border-bottom: 1px solid #333;
+}
+
+.logo {
+    height: 55px;
+    width: auto;
+    cursor: pointer;
+}
+
+.checkout-container {
+    display: flex;
+    gap: 25px;
+    padding: 30px 40px;
+}
+
+.checkout-left {
+    flex: 2;
+}
+
+.checkout-right {
+    flex: 1;
+    background: #1c1c1c;
+    padding: 20px;
+    border-radius: 12px;
+    height: fit-content;
+}
+
+.address-card,
+.product-card,
+.coupon-card {
+    background: #1c1c1c;
+    padding: 20px;
+    border-radius: 12px;
+    margin-bottom: 20px;
+}
+
+.address-card {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.edit-icon {
+    font-size: 22px;
+    cursor: pointer;
+}
+
+.product-card {
+    display: flex;
+    gap: 20px;
+}
+
+.product-card img {
+    width: 180px;
+    border-radius: 10px;
+}
+
+.price {
+    font-size: 22px;
+    font-weight: bold;
+    margin: 12px 0;
+}
+
+.quantity-box {
+    display: flex;
+    gap: 12px;
+    align-items: center;
+}
+
+.quantity-box button {
+    width: 35px;
+    height: 35px;
+    border: none;
+    background: #333;
+    color: white;
+    border-radius: 50%;
+    cursor: pointer;
+}
+
+.coupon-box {
+    display: flex;
+    gap: 10px;
+    margin-top: 15px;
+}
+
+.coupon-box input {
+    flex: 1;
+    height: 50px;
+    padding: 0 15px;
+    border-radius: 8px;
+    border: none;
+    outline: none;
+    background: #000;
+    color: white;
+    font-size: 16px;
+}
+
+.coupon-box button {
+    height: 50px;
+    width: 80px;
+    padding: 0 24px;
+    border: none;
+    border-radius: 8px;
+    background: #d9d9d9;
+    color: black;
+    font-weight: bold;
+    cursor: pointer;
+}
+
+.coupon-message {
+    margin-top: 10px;
+    color: #4caf50;
+}
+
+.price-row {
+    display: flex;
+    justify-content: space-between;
+    margin: 12px 0;
+}
+
+.discount {
+    color: #4caf50;
+}
+
+.free {
+    color: #4caf50;
+}
+
+.total {
+    font-size: 18px;
+    font-weight: bold;
+}
+
+.continue-btn {
+    width: 100%;
+    margin-top: 20px;
+    padding: 14px;
+    border: none;
+    border-radius: 10px;
+    cursor: pointer;
+}

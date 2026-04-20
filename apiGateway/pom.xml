@@ -12,17 +12,19 @@
         <relativePath>../pom.xml</relativePath>
     </parent>
 
+    <!-- ✅ Fixed: matches folder name 'apiGateway' -->
     <artifactId>api-gateway</artifactId>
     <name>api-gateway</name>
 
     <properties>
         <spring-cloud.version>2023.0.1</spring-cloud.version>
+        <!-- ✅ Fixed: match JDK 21 runtime -->
+        <maven.compiler.source>21</maven.compiler.source>
+        <maven.compiler.target>21</maven.compiler.target>
     </properties>
 
-    <!-- Correct place for Spring Cloud BOM -->
     <dependencyManagement>
         <dependencies>
-
             <dependency>
                 <groupId>org.springframework.cloud</groupId>
                 <artifactId>spring-cloud-dependencies</artifactId>
@@ -30,7 +32,6 @@
                 <type>pom</type>
                 <scope>import</scope>
             </dependency>
-
         </dependencies>
     </dependencyManagement>
 
@@ -54,17 +55,17 @@
             <artifactId>jjwt-api</artifactId>
             <version>0.11.5</version>
         </dependency>
-
         <dependency>
             <groupId>io.jsonwebtoken</groupId>
             <artifactId>jjwt-impl</artifactId>
             <version>0.11.5</version>
+            <scope>runtime</scope>
         </dependency>
-
         <dependency>
             <groupId>io.jsonwebtoken</groupId>
             <artifactId>jjwt-jackson</artifactId>
             <version>0.11.5</version>
+            <scope>runtime</scope>
         </dependency>
 
         <!-- Shared Library -->
@@ -74,10 +75,11 @@
             <version>1.0.0</version>
         </dependency>
 
-        <!-- Lombok -->
+        <!-- ✅ Fixed: Lombok 1.18.32 required for JDK 21 -->
         <dependency>
             <groupId>org.projectlombok</groupId>
             <artifactId>lombok</artifactId>
+            <version>1.18.32</version>
             <optional>true</optional>
         </dependency>
 
@@ -87,6 +89,14 @@
             <artifactId>spring-boot-starter-actuator</artifactId>
         </dependency>
 
+        <!-- ✅ Added: macOS Netty native DNS (Apple Silicon) -->
+        <dependency>
+            <groupId>io.netty</groupId>
+            <artifactId>netty-resolver-dns-native-macos</artifactId>
+            <version>4.1.107.Final</version>
+            <classifier>osx-aarch_64</classifier>  <!-- ✅ underscore, not hyphen -->
+            <scope>runtime</scope>
+        </dependency>
         <!-- Test -->
         <dependency>
             <groupId>org.springframework.boot</groupId>
@@ -98,12 +108,19 @@
 
     <build>
         <plugins>
-
             <plugin>
                 <groupId>org.springframework.boot</groupId>
                 <artifactId>spring-boot-maven-plugin</artifactId>
+                <configuration>
+                    <!-- ✅ Exclude Lombok from the final JAR -->
+                    <excludes>
+                        <exclude>
+                            <groupId>org.projectlombok</groupId>
+                            <artifactId>lombok</artifactId>
+                        </exclude>
+                    </excludes>
+                </configuration>
             </plugin>
-
         </plugins>
     </build>
 

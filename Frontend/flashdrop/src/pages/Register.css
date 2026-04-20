@@ -1,0 +1,73 @@
+.register-page {
+  background: #000;
+  height: 100vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-family: Arial;
+  color: white;
+}
+
+.register-card {
+  background: #111;
+  padding: 30px;
+  width: 350px;
+  border-radius: 12px;
+}
+
+.title {
+  text-align: center;
+  color: #8f8b87;
+  font-size: 40px;
+  font-weight: bold;
+}
+
+.subtitle {
+  text-align: center;
+  margin-bottom: 20px;
+  font-weight: normal;
+}
+
+label {
+  font-size: 14px;
+}
+
+input {
+  width: 100%;
+  padding: 12px;
+  margin: 6px 0 15px 0;
+  background: #000;
+  border: 1px solid #444;
+  border-radius: 6px;
+  color: white;
+}
+
+button {
+  width: 100%;
+  padding: 12px;
+  background: hsl(204, 2%, 53%);
+  border: none;
+  border-radius: 6px;
+  color: black;
+  font-weight: bold;
+  margin-top: 10px;
+  cursor: pointer;
+}
+
+button:hover {
+  opacity: 0.9;
+}
+
+.signin-text {
+  text-align: center;
+  margin-top: 15px;
+}
+
+.signin-text a {
+  color: hsl(204, 2%, 47%);
+  text-decoration: none;
+}
+
+.signin-text a:hover {
+  text-decoration: underline;
+}

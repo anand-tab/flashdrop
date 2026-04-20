@@ -1,0 +1,133 @@
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+html, body, #root {
+  width: 100%;
+  min-height: 100vh;
+}
+
+.login-container {
+  width: 100%;
+  min-height: 100vh;
+  background-color: #000000;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 40px 20px;
+}
+
+/* Header */
+.login-header {
+  text-align: center;
+  margin-bottom: 32px;
+}
+
+.brand-logo {
+  font-size: 3rem;
+  font-weight: 800;
+  color: hsl(204, 2%, 47%);
+  letter-spacing: -1px;
+  margin-bottom: 8px;
+}
+
+.login-title {
+  font-size: 2rem;
+  font-weight: 700;
+  color: hsl(204, 2%, 47%);
+}
+
+/* Card */
+.login-card {
+  background-color: #111111;
+  border: 1px solid #222222;
+  border-radius: 20px;
+  padding: 40px 36px;
+  width: 100%;
+  max-width: 480px;
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+}
+
+/* Form Group */
+.form-group {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.form-label {
+  font-size: 1rem;
+  font-weight: 700;
+  color: #ffffff;
+  font-family: "Segoe UI", sans-serif;
+}
+
+.form-input {
+  background-color: #0a0a0a;
+  border: 1.5px solid #2a2a2a;
+  border-radius: 14px;
+  padding: 18px 20px;
+  font-size: 1rem;
+  color: #ffffff;
+  outline: none;
+  font-family: "Segoe UI", sans-serif;
+  transition: border-color 0.2s ease, box-shadow 0.2s ease;
+}
+
+.form-input::placeholder {
+  color: #555555;
+}
+
+.form-input:focus {
+  border-color: #51504e;
+  box-shadow: 0 0 0 3px rgba(255, 140, 0, 0.15);
+}
+
+/* Button */
+.login-btn {
+  background-color: hsl(204, 2%, 47%);
+  color: #ffffff;
+  border: none;
+  border-radius: 14px;
+  padding: 20px;
+  font-size: 1.1rem;
+  font-weight: 700;
+  cursor: pointer;
+  width: 100%;
+  margin-top: 4px;
+  font-family: "Segoe UI", sans-serif;
+  transition: background-color 0.2s ease, transform 0.1s ease;
+}
+
+.login-btn:hover {
+  background-color: #333230;
+}
+
+.login-btn:active {
+  transform: scale(0.98);
+}
+
+/* Register link */
+.register-text {
+  text-align: center;
+  color: #777777;
+  font-size: 1rem;
+  font-family: "Segoe UI", sans-serif;
+}
+
+.register-link {
+  color: #efece8;
+  cursor: pointer;
+  font-weight: 500;
+  transition: color 0.2s ease;
+}
+
+.register-link:hover {
+  color: #444342;
+  text-decoration: underline;
+}
