@@ -1,0 +1,12 @@
+com/flashdrop/productService/dto/ProductResponse.class
+com/flashdrop/productService/dto/ProductResponse$ProductResponseBuilder.class
+com/flashdrop/productService/dto/ProductMapper.class
+com/flashdrop/productService/dto/ProductMapperImpl.class
+com/flashdrop/productService/controller/ProductController.class
+com/flashdrop/productService/entity/Products.class
+com/flashdrop/productService/entity/Products$ProductsBuilder.class
+com/flashdrop/productService/services/ProductService.class
+com/flashdrop/productService/ProductServiceApplication.class
+com/flashdrop/productService/repository/ProductRepository.class
+com/flashdrop/productService/dto/ProductRequest.class
+com/flashdrop/productService/dto/ProductRequest$ProductRequestBuilder.class

@@ -1,0 +1,8 @@
+/Users/sumanshuanand/Documents/flashdrop/product-service/src/main/java/com/flashdrop/productService/ProductServiceApplication.java
+/Users/sumanshuanand/Documents/flashdrop/product-service/src/main/java/com/flashdrop/productService/controller/ProductController.java
+/Users/sumanshuanand/Documents/flashdrop/product-service/src/main/java/com/flashdrop/productService/dto/ProductMapper.java
+/Users/sumanshuanand/Documents/flashdrop/product-service/src/main/java/com/flashdrop/productService/dto/ProductRequest.java
+/Users/sumanshuanand/Documents/flashdrop/product-service/src/main/java/com/flashdrop/productService/dto/ProductResponse.java
+/Users/sumanshuanand/Documents/flashdrop/product-service/src/main/java/com/flashdrop/productService/entity/Products.java
+/Users/sumanshuanand/Documents/flashdrop/product-service/src/main/java/com/flashdrop/productService/repository/ProductRepository.java
+/Users/sumanshuanand/Documents/flashdrop/product-service/src/main/java/com/flashdrop/productService/services/ProductService.java

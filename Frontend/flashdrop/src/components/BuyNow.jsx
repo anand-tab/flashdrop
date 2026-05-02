@@ -12,7 +12,6 @@ const BuyNow = () => {
     const [product, setProduct] = useState(null);
     const [address, setAddress] = useState(null);
     const [quantity, setQuantity] = useState(1);
-
     const [couponCode, setCouponCode] = useState("");
     const [discount, setDiscount] = useState(0);
     const [couponMessage, setCouponMessage] = useState("");
@@ -36,6 +35,7 @@ const BuyNow = () => {
         fetchProduct();
     }, [productId]);
 
+    
     // FETCH ADDRESS
     useEffect(() => {
         const fetchAddress = async () => {
@@ -59,7 +59,7 @@ const BuyNow = () => {
     const handleApplyCoupon = async () => {
         try {
             const response = await apiFetch(
-                `http://localhost:3002/api/coupon/apply`,
+                `http://localhost:3002/api/coupon/fetchOff`,
                 {
                     method: "POST",
                     headers: { "Content-Type": "application/json" },
@@ -67,6 +67,7 @@ const BuyNow = () => {
                         couponCode,
                         productId,
                         quantity,
+                        productPrice: product.productPrice,
                     }),
                 }
             );
@@ -74,7 +75,7 @@ const BuyNow = () => {
             const data = await response.json();
 
             if (response.ok) {
-                setDiscount(data.discountAmount);
+                setDiscount(Number(data));
                 setCouponMessage("Coupon applied successfully!");
             } else {
                 setDiscount(0);

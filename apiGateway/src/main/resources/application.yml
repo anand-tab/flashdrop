@@ -39,5 +39,15 @@ spring:
         predicates:
           - Path=/api/product/**
 
+      - id: order-service
+        uri: http://localhost:3004
+        predicates:
+          - Path=/api/order/**
+
+      - id: order-service
+        uri: http://localhost:3004
+        predicates:
+          - Path=/api/coupon/**
+
 jwt:
   secret: 9fKx3LqP7mZtR2vX8nBcY5wHsU4jQa1eTf6GdWp0rTy9UiOlVk3Nz7MhSe2AxCd

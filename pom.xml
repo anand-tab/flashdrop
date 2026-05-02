@@ -16,6 +16,8 @@
         <module>auth-service</module>
         <module>apiGateway</module>
         <module>product-service</module>
+        <module>order-service</module>
+        <module>inventory-service</module>
     </modules>
 
     <!-- 👇 This makes child modules inherit Spring Boot version -->
