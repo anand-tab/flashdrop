@@ -12,17 +12,18 @@
         <relativePath>../pom.xml</relativePath>
     </parent>
 
-    <!-- ✅ Fixed: matches folder name 'apiGateway' -->
     <artifactId>api-gateway</artifactId>
     <name>api-gateway</name>
+    <packaging>jar</packaging>
 
+    <!-- ✅ Java 21 + Cloud -->
     <properties>
+        <java.version>21</java.version>
         <spring-cloud.version>2023.0.1</spring-cloud.version>
-        <!-- ✅ Fixed: match JDK 21 runtime -->
-        <maven.compiler.source>21</maven.compiler.source>
-        <maven.compiler.target>21</maven.compiler.target>
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     </properties>
 
+    <!-- ✅ Spring Cloud BOM -->
     <dependencyManagement>
         <dependencies>
             <dependency>
@@ -37,19 +38,25 @@
 
     <dependencies>
 
-        <!-- Spring Cloud Gateway -->
+        <!-- 🌐 API Gateway -->
         <dependency>
             <groupId>org.springframework.cloud</groupId>
             <artifactId>spring-cloud-starter-gateway</artifactId>
         </dependency>
 
-        <!-- Spring Security -->
+        <!-- 🔐 Security -->
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-security</artifactId>
         </dependency>
 
-        <!-- JWT -->
+        <!-- 📊 Actuator -->
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-actuator</artifactId>
+        </dependency>
+
+        <!-- 🔑 JWT -->
         <dependency>
             <groupId>io.jsonwebtoken</groupId>
             <artifactId>jjwt-api</artifactId>
@@ -68,36 +75,30 @@
             <scope>runtime</scope>
         </dependency>
 
-        <!-- Shared Library -->
+        <!-- 🔁 Common Library -->
         <dependency>
             <groupId>com.flashdrop</groupId>
             <artifactId>common-library</artifactId>
             <version>1.0.0</version>
         </dependency>
 
-        <!-- ✅ Fixed: Lombok 1.18.32 required for JDK 21 -->
+        <!-- 🧠 Lombok (Java 21 compatible) -->
         <dependency>
             <groupId>org.projectlombok</groupId>
             <artifactId>lombok</artifactId>
-            <version>1.18.32</version>
-            <optional>true</optional>
+            <version>1.18.36</version>
+            <scope>provided</scope>
         </dependency>
 
-        <!-- Actuator -->
-        <dependency>
-            <groupId>org.springframework.boot</groupId>
-            <artifactId>spring-boot-starter-actuator</artifactId>
-        </dependency>
-
-        <!-- ✅ Added: macOS Netty native DNS (Apple Silicon) -->
+        <!-- 🍎 macOS Apple Silicon DNS fix (optional but useful) -->
         <dependency>
             <groupId>io.netty</groupId>
             <artifactId>netty-resolver-dns-native-macos</artifactId>
-            <version>4.1.107.Final</version>
-            <classifier>osx-aarch_64</classifier>  <!-- ✅ underscore, not hyphen -->
+            <classifier>osx-aarch_64</classifier>
             <scope>runtime</scope>
         </dependency>
-        <!-- Test -->
+
+        <!-- 🧪 Testing -->
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-test</artifactId>
@@ -108,11 +109,12 @@
 
     <build>
         <plugins>
+
+            <!-- 🚀 Spring Boot Plugin -->
             <plugin>
                 <groupId>org.springframework.boot</groupId>
                 <artifactId>spring-boot-maven-plugin</artifactId>
                 <configuration>
-                    <!-- ✅ Exclude Lombok from the final JAR -->
                     <excludes>
                         <exclude>
                             <groupId>org.projectlombok</groupId>
@@ -121,6 +123,18 @@
                     </excludes>
                 </configuration>
             </plugin>
+
+            <!-- ⚙️ Java 21 Compiler -->
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-compiler-plugin</artifactId>
+                <version>3.13.0</version>
+                <configuration>
+                    <source>${java.version}</source>
+                    <target>${java.version}</target>
+                </configuration>
+            </plugin>
+
         </plugins>
     </build>
 

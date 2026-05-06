@@ -54,4 +54,8 @@ public class UserService {
         userRepository.deleteById(userId);
         return "User deleted";
     }
+
+    public Boolean verifyUser(String email) {
+        return userRepository.findByEmail(email).isPresent();
+    }
 }

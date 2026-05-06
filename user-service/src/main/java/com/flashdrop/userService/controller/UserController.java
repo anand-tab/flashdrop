@@ -32,4 +32,9 @@ public class UserController {
     public ResponseEntity<String> deleteUser(@PathVariable("userId") String userId) {
         return ResponseEntity.ok(userService.deleteUser(userId));
     }
+
+    @GetMapping("/{email}")
+    public ResponseEntity<Boolean> verifyUser(@PathVariable("email") String email){
+        return ResponseEntity.ok(userService.verifyUser(email));
+    }
 }

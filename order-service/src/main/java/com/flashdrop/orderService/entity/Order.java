@@ -14,7 +14,7 @@ import lombok.NoArgsConstructor;
 @Table(name = "customer_orders")
 public class Order {
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @GeneratedValue(strategy = GenerationType.UUID)
     private String orderId;
     private String productId;
     private String email;

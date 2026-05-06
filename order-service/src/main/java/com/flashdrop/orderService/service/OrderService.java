@@ -1,5 +1,6 @@
 package com.flashdrop.orderService.service;
 
+import com.flashdrop.orderService.client.UserServiceClient;
 import com.flashdrop.orderService.dto.OrderRequest;
 import com.flashdrop.orderService.dto.OrderResponse;
 import com.flashdrop.orderService.entity.Order;
@@ -19,8 +20,15 @@ public class OrderService {
     private OrderRepository orderRepository;
     @Autowired
     private RedisInventoryService redisInventoryService;
+    @Autowired
+    private UserServiceClient userServiceClient;
 
     public OrderResponse createOrder(OrderRequest request) {
+
+        if(!userServiceClient.verifyUser(request.getEmail())) {
+            log.info("Invalid email address");
+           throw new RuntimeException("Invalid email");
+        }
         log.info("Recievec order request for productId : {}", request.getProductId());
 
         InventoryResult result = redisInventoryService.checkAndDeduct(request.getProductId(), request.getQuantity());

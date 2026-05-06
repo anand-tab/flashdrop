@@ -2,7 +2,8 @@
 <project version="4">
   <component name="ProjectModuleManager">
     <modules>
-      <module fileurl="file://$PROJECT_DIR$/user-service.iml" filepath="$PROJECT_DIR$/user-service.iml" />
+      <module fileurl="file://$PROJECT_DIR$/inventory-service.iml" filepath="$PROJECT_DIR$/inventory-service.iml" />
+      <module fileurl="file://$PROJECT_DIR$/order-service.iml" filepath="$PROJECT_DIR$/order-service.iml" />
     </modules>
   </component>
 </project>

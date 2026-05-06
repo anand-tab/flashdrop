@@ -18,7 +18,7 @@ public class RedisConfig {
 
     @Bean
     public RedisScript<Long> checkAndDeductScript(){
-        ClassPathResource script = new ClassPathResource("redis/checkAndDeduct.lua");
+        ClassPathResource script = new ClassPathResource("scripts/check-and-deduct.lua");
         return RedisScript.of(script, Long.class);
     }
 }
