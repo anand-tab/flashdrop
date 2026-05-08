@@ -21,4 +21,12 @@ public class RedisConfig {
         ClassPathResource script = new ClassPathResource("scripts/check-and-deduct.lua");
         return RedisScript.of(script, Long.class);
     }
+
+    @Bean
+    public RedisScript<String> preloadStockScript() {
+        return RedisScript.of(
+                new ClassPathResource("lua/preload-stock.lua"),
+                String.class
+        );
+    }
 }

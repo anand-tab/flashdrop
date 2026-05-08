@@ -2,6 +2,7 @@ package com.flashdrop.orderService.controller;
 
 import com.flashdrop.orderService.dto.OrderRequest;
 import com.flashdrop.orderService.dto.OrderResponse;
+import com.flashdrop.orderService.dto.RedisRequest;
 import com.flashdrop.orderService.entity.Order;
 import com.flashdrop.orderService.service.OrderService;
 import lombok.extern.slf4j.Slf4j;
@@ -29,4 +30,10 @@ public class OrderController {
         return ResponseEntity.ok(response);
     }
 
+
+    @PostMapping
+    public ResponseEntity<String> preLoadStock(@RequestBody RedisRequest redisRequest) {
+        log.info("Preload stock request received: {}", redisRequest);
+        return ResponseEntity.ok(orderService.preLoadStock(redisRequest));
+    }
 }
