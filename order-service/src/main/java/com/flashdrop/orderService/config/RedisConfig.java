@@ -25,7 +25,7 @@ public class RedisConfig {
     @Bean
     public RedisScript<String> preloadStockScript() {
         return RedisScript.of(
-                new ClassPathResource("lua/preload-stock.lua"),
+                new ClassPathResource("scripts/preload-stock.lua"),
                 String.class
         );
     }

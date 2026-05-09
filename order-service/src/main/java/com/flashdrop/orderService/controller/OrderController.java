@@ -31,7 +31,7 @@ public class OrderController {
     }
 
 
-    @PostMapping
+    @PostMapping("/orderReq")
     public ResponseEntity<String> preLoadStock(@RequestBody RedisRequest redisRequest) {
         log.info("Preload stock request received: {}", redisRequest);
         return ResponseEntity.ok(orderService.preLoadStock(redisRequest));
