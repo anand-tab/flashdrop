@@ -12,6 +12,7 @@ import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
 
 import java.time.LocalDate;
+import java.util.List;
 
 @Data
 @NoArgsConstructor
@@ -27,6 +28,7 @@ public class Products {
     private String productDescription;
     private String productPrice;
     private String productImageUrl;
+    private List<String> productImageUrlList;
     private String productCategory;
     private String productStatus;
     private Integer rating;
