@@ -1,0 +1,7 @@
+package com.flashdrop.inventoryService.repository;
+
+import com.flashdrop.inventoryService.entity.Category;
+import org.springframework.data.jpa.repository.JpaRepository;
+
+public interface CategoryRepository extends JpaRepository<Category, Long> {
+}

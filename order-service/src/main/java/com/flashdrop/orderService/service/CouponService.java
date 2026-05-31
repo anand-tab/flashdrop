@@ -21,12 +21,14 @@ public class CouponService {
 
     }
 
-    public Integer fetchOffAmt(CouponRequest couponRequest) {
+    public double fetchOffAmt(CouponRequest couponRequest) {
         Coupon coupon = couponRepository.findByCouponCode(couponRequest.getCouponCode());
         int percet = coupon.getPercentageOff();
-        int cst = couponRequest.getProductPrice();
-
-        int res = cst*percet*(couponRequest.getQuantity());
+        double cst = couponRequest.getProductPrice();
+        if(coupon.getPriceLimit()>cst){
+            throw new RuntimeException("Add minimum " + couponRequest.getProductPrice() + " value in cart.");
+        }
+        double res = cst*percet*(couponRequest.getQuantity());
         log.info("This is the res" + res + percet);
         return res/100;
     }
