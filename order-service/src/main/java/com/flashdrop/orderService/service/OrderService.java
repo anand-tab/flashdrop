@@ -2,6 +2,7 @@ package com.flashdrop.orderService.service;
 
 import com.flashdrop.orderService.client.UserServiceClient;
 import com.flashdrop.orderService.config.RedisConfig;
+import com.flashdrop.orderService.dto.KafkaContext;
 import com.flashdrop.orderService.dto.OrderRequest;
 import com.flashdrop.orderService.dto.OrderResponse;
 import com.flashdrop.orderService.dto.RedisRequest;
@@ -9,10 +10,12 @@ import com.flashdrop.orderService.entity.Order;
 import com.flashdrop.orderService.redis.InventoryResult;
 import com.flashdrop.orderService.redis.RedisInventoryService;
 import com.flashdrop.orderService.repository.OrderRepository;
+import lombok.Builder;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.data.redis.core.script.RedisScript;
+import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
@@ -35,6 +38,9 @@ public class OrderService {
     private StringRedisTemplate redisTemplate;
     @Autowired
     private RedisScript<String> preloadStockScript;
+
+    @Autowired
+    private KafkaTemplate<String, Object> kafkaTemplate;
 
 
 
@@ -59,6 +65,28 @@ public class OrderService {
                 Order order = buildOrder(request ,Order.OrderStatus.NORMAL);
                 orderRepository.save(order);
 
+                String key = order.getOrderId();
+                KafkaContext kafkaContext = KafkaContext.builder()
+                        .orderId(order.getOrderId())
+                        .email(order.getEmail())
+                        .quantity(order.getQuantity())
+                        .skuID(order.getProductId())
+                        .status(String.valueOf(order.getStatus()))
+                        .build();
+
+                kafkaTemplate.send("orders",key, kafkaContext)
+                        .whenComplete((result23, exception) -> {
+                            if (exception != null) {
+                                // Handle transmission failure (e.g., alert system, retry log)
+                                log.error("❌ Failed to send order {} to Kafka", order.getOrderId(), exception);
+                            } else {
+                                // Metadata contains partition and offset details
+                                log.info("✅ Sent to partition {} with offset {}",
+                                        result23.getRecordMetadata().partition(),
+                                        result23.getRecordMetadata().offset());
+                            }
+                        });
+
                 // send the data to inventory before saving in db
                 yield OrderResponse.normal(order.getOrderId());
             }
@@ -76,6 +104,28 @@ public class OrderService {
 
                 Order order = buildOrder(request, Order.OrderStatus.CONFIRMED);
                 orderRepository.save(order);
+
+                String key = order.getOrderId();
+                KafkaContext kafkaContext = KafkaContext.builder()
+                        .orderId(order.getOrderId())
+                        .email(order.getEmail())
+                        .quantity(order.getQuantity())
+                        .skuID(order.getProductId())
+                        .status(String.valueOf(order.getStatus()))
+                        .build();
+
+                kafkaTemplate.send("orders",key, kafkaContext)
+                        .whenComplete((result23, exception) -> {
+                            if (exception != null) {
+                                // Handle transmission failure (e.g., alert system, retry log)
+                                log.error("❌ Failed to send order {} to Kafka", order.getOrderId(), exception);
+                            } else {
+                                // Metadata contains partition and offset details
+                                log.info("✅ Sent to partition {} with offset {}",
+                                        result23.getRecordMetadata().partition(),
+                                        result23.getRecordMetadata().offset());
+                            }
+                        });
 
                 yield OrderResponse.confirmed(order.getOrderId(), result.getRemainingStock());
             }
@@ -123,7 +173,7 @@ public class OrderService {
         }
 
         for (int i = 0; i < keyList.size(); i++) {
-            args.add(keyList.get(i));
+            args.add("flash:" + keyList.get(i));
             args.add(valueList.get(i));
         }
 

@@ -2,14 +2,25 @@ package com.flashdrop.inventoryService.service;
 
 
 import com.flashdrop.inventoryService.dto.AddProductReq;
-import com.flashdrop.inventoryService.dto.AddProductRes;
 import com.flashdrop.inventoryService.dto.AddSkuReq;
+import com.flashdrop.inventoryService.dto.KafkaContext;
 import com.flashdrop.inventoryService.entity.*;
 import com.flashdrop.inventoryService.repository.*;
+import jakarta.persistence.EntityNotFoundException;
+import jakarta.transaction.Transactional;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.kafka.annotation.KafkaListener;
+import org.springframework.kafka.support.KafkaHeaders;
+import org.springframework.messaging.MessageHeaders;
+import org.springframework.messaging.handler.annotation.Header;
 import org.springframework.stereotype.Service;
 
+import java.util.Optional;
+
+
 @Service
+@Slf4j
 public class ProductService {
 
     @Autowired
@@ -23,52 +34,116 @@ public class ProductService {
     @Autowired
     private CategoryRepository categoryRepository;
 
-    public void addProduct(AddProductReq addProductReq) {
-
-        Category category = categoryRepository.findById(addProductReq.getCategoryId())
-                .orElseThrow(()->
-                        new RuntimeException("Category not found"));
 
 
-        Product product = Product.builder()
-                .productCode(addProductReq.getProductCode())
-                .productName((addProductReq.getProductName()))
-                .description((addProductReq.getDescription()))
-                .brand((addProductReq.getBrand()))
-                .category(category)
+
+    @Transactional
+    public void purchasedHot(String key,KafkaContext kafkaContext) {
+
+        Inventory inventory = inventoryRepository.findBySku_SkuCode(kafkaContext.getSkuID())
+                .orElseThrow(()-> new EntityNotFoundException("Sku did not found"));
+
+        if (inventory.getAvailableQuantity() < kafkaContext.getQuantity()) {
+            throw new IllegalArgumentException("Insufficient stock for SKU: " + kafkaContext.getSkuID() +
+                    ". Available: " + inventory.getAvailableQuantity() + ", Requested: " + kafkaContext.getQuantity());
+        }
+
+        inventory.setAvailableQuantity(inventory.getAvailableQuantity() - kafkaContext.getQuantity());
+
+        inventoryRepository.save(inventory);
+        log.info("Inventory updated quantity in db"+inventory.getAvailableQuantity());
+
+        Sku sku = skuRepository.findBySkuCode(kafkaContext.getSkuID()).orElseThrow(()-> new EntityNotFoundException("SKU: " + kafkaContext.getSkuID()));
+        InventoryTransaction inventoryTransaction = InventoryTransaction.builder()
+                .remarks(kafkaContext.getStatus())
+                .orderId(kafkaContext.getOrderId())
+                .userId(kafkaContext.getEmail())
+                .quantity(kafkaContext.getQuantity())
+                .sku(sku)
+                .type(TransactionType.STOCK_OUT)
                 .build();
 
-        productRepository.save(product);
+        transactionRepository.save(inventoryTransaction);
+    }
 
-        for(AddSkuReq skuReq : addProductReq.getSkus()) {
-            Sku sku = Sku.builder()
-                    .skuCode(skuReq.getSkuCode())
-                    .color(skuReq.getColor())
-                    .size(skuReq.getSize())
-                    .costPrice(skuReq.getPrice())
-                    .product(product)
+    public void addProduct(AddProductReq request) {
+        Category category = categoryRepository
+                .findById(request.getCategoryId())
+                .orElseThrow(() ->
+                        new RuntimeException("Category not found"));
+
+        Product product = productRepository.findByProductCode(request.getProductCode());
+
+        if(product == null) {
+            product = Product.builder()
+                    .productName(request.getProductName())
+                    .productCode(request.getProductCode())
+                    .description(request.getDescription())
+                    .brand(request.getBrand())
+                    .category(category)
                     .build();
 
-            skuRepository.save(sku);
+            product = productRepository.save(product);
+        }
 
+        for (AddSkuReq skuRequest : request.getSkus()) {
 
-            Inventory inventory = Inventory.builder()
-                    .sku(sku)
-                    .availableQuantity(skuReq.getInitialStock())
-                    .reservedQuantity(0)
-                    .build();
+            Optional<Sku> existingSku =
+                    skuRepository.findBySkuCode(
+                            skuRequest.getSkuCode());
 
-            inventoryRepository.save(inventory);
+            Sku sku;
 
-            InventoryTransaction inventoryTransaction = InventoryTransaction.builder()
-                    .sku(sku)
-                    .type(TransactionType.STOCK_IN)
-                    .quantity(skuReq.getInitialStock())
-                    .userId("Admin")
-                    .remarks("Product Creation")
-                    .build();
+            if (existingSku.isPresent()) {
 
-            transactionRepository.save(inventoryTransaction);
+                sku = existingSku.get();
+
+                Inventory inventory =
+                        inventoryRepository
+                                .findBySku_SkuCode(sku.getSkuCode())
+                                .orElseThrow(() -> new RuntimeException("Inventory not found"));
+
+                inventory.setAvailableQuantity(
+                        inventory.getAvailableQuantity()
+                                + skuRequest.getInitialStock());
+
+                inventoryRepository.save(inventory);
+
+            } else {
+
+                sku = Sku.builder()
+                        .skuCode(skuRequest.getSkuCode())
+                        .color(skuRequest.getColor())
+                        .size(skuRequest.getSize())
+                        .material(skuRequest.getMaterial())
+                        .sellingPrice(null)
+                        .costPrice(skuRequest.getPrice())
+                        .product(product)
+                        .build();
+
+                sku = skuRepository.save(sku);
+
+                Inventory inventory = Inventory.builder()
+                        .sku(sku)
+                        .availableQuantity(
+                                skuRequest.getInitialStock())
+                        .reservedQuantity(0)
+                        .build();
+
+                inventoryRepository.save(inventory);
+            }
+
+            InventoryTransaction transaction =
+                    InventoryTransaction.builder()
+                            .sku(sku)
+                            .type(TransactionType.STOCK_IN)
+                            .quantity(
+                                    skuRequest.getInitialStock())
+                            .userId("INITIAL_STOCK")
+                            .remarks("Product Creation")
+                            .build();
+
+            transactionRepository.save(transaction);
         }
     }
 }

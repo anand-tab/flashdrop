@@ -9,6 +9,7 @@ public class AddSkuReq {
     private String skuCode;
     private String color;
     private String size;
+    private String material;
     private BigDecimal price;
     private Integer initialStock;
 }
