@@ -7,6 +7,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.math.BigDecimal;
+import java.util.List;
 
 @Data
 @NoArgsConstructor
@@ -28,9 +29,15 @@ public class Sku {
 
     private String material;
 
-    private BigDecimal sellingPrice;
+    private String productImageUrl;
 
-    private BigDecimal costPrice;
+    private List<String> productImageUrlList;
+
+    private Double rating;
+
+    private String sellingPrice;
+
+    private String costPrice;
 
     //In future if implemented warehouse detail then we will add location etc
     // private String location;

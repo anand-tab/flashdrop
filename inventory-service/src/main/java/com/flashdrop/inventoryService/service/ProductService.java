@@ -1,9 +1,11 @@
 package com.flashdrop.inventoryService.service;
 
 
+import com.flashdrop.inventoryService.client.ProductServiceClient;
 import com.flashdrop.inventoryService.dto.AddProductReq;
 import com.flashdrop.inventoryService.dto.AddSkuReq;
 import com.flashdrop.inventoryService.dto.KafkaContext;
+import com.flashdrop.inventoryService.dto.ProductServiceReq;
 import com.flashdrop.inventoryService.entity.*;
 import com.flashdrop.inventoryService.repository.*;
 import jakarta.persistence.EntityNotFoundException;
@@ -33,6 +35,8 @@ public class ProductService {
     private TransactionRepository transactionRepository;
     @Autowired
     private CategoryRepository categoryRepository;
+    @Autowired
+    private ProductServiceClient productServiceClient;
 
 
 
@@ -117,6 +121,8 @@ public class ProductService {
                         .size(skuRequest.getSize())
                         .material(skuRequest.getMaterial())
                         .sellingPrice(null)
+                        .productImageUrl(skuRequest.getProductImageUrl())
+                        .productImageUrlList(skuRequest.getProductImageUrlList())
                         .costPrice(skuRequest.getPrice())
                         .product(product)
                         .build();
@@ -144,6 +150,30 @@ public class ProductService {
                             .build();
 
             transactionRepository.save(transaction);
+
+            String str1 = "";
+
+            Inventory inventory = inventoryRepository.findBySku_SkuCode(skuRequest.getSkuCode()).orElseThrow(()-> new EntityNotFoundException("SKU: " + skuRequest.getSkuCode()));
+
+            if(inventory.getAvailableQuantity()>1){
+                str1 = "Available";
+            }else if(inventory.getAvailableQuantity()==0) {
+                str1 = "Not Available";
+            }
+
+
+            ProductServiceReq productServiceReq = ProductServiceReq.builder()
+                    .productId(skuRequest.getSkuCode())
+                    .productName(product.getProductName())
+                    .productDescription(product.getDescription())
+                    .productCategory(category.getName())
+                    .productStatus(str1)
+                    .productPrice(sku.getCostPrice())
+                    .productImageUrl(sku.getProductImageUrl())
+                    .productImageUrlList(sku.getProductImageUrlList())
+                    .rating(4.5)
+                    .build();
+            String str = productServiceClient.addProduct(productServiceReq);
         }
     }
 }

@@ -31,7 +31,7 @@ public class Products {
     private List<String> productImageUrlList;
     private String productCategory;
     private String productStatus;
-    private Integer rating;
+    private double rating;
 
     @CreationTimestamp
     private LocalDate createdDate;

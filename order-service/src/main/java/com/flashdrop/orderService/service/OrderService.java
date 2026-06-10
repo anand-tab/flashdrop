@@ -1,5 +1,6 @@
 package com.flashdrop.orderService.service;
 
+import com.flashdrop.orderService.client.InventoryServiceClient;
 import com.flashdrop.orderService.client.UserServiceClient;
 import com.flashdrop.orderService.config.RedisConfig;
 import com.flashdrop.orderService.dto.KafkaContext;
@@ -42,7 +43,8 @@ public class OrderService {
     @Autowired
     private KafkaTemplate<String, Object> kafkaTemplate;
 
-
+    @Autowired
+    private InventoryServiceClient inventoryServiceClient;
 
 
     public OrderResponse createOrder(OrderRequest request) {
@@ -74,7 +76,10 @@ public class OrderService {
                         .status(String.valueOf(order.getStatus()))
                         .build();
 
-                kafkaTemplate.send("orders",key, kafkaContext)
+
+                inventoryServiceClient.purchasedHot(kafkaContext);
+
+               /* kafkaTemplate.send("orders",key, kafkaContext)
                         .whenComplete((result23, exception) -> {
                             if (exception != null) {
                                 // Handle transmission failure (e.g., alert system, retry log)
@@ -85,7 +90,7 @@ public class OrderService {
                                         result23.getRecordMetadata().partition(),
                                         result23.getRecordMetadata().offset());
                             }
-                        });
+                        });*/
 
                 // send the data to inventory before saving in db
                 yield OrderResponse.normal(order.getOrderId());
