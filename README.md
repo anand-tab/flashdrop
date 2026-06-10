@@ -2,104 +2,244 @@
 
 # ⚡ FlashDrop
 
-### Distributed Inventory & Order Orchestration for High-Traffic Flash Sales
+### *Not every order is created equal — FlashDrop knows the difference*
 
 [![Java](https://img.shields.io/badge/Java-21-ED8B00?style=for-the-badge&logo=openjdk&logoColor=white)](https://openjdk.org/)
 [![Spring Boot](https://img.shields.io/badge/Spring_Boot-6DB33F?style=for-the-badge&logo=springboot&logoColor=white)](https://spring.io/projects/spring-boot)
 [![Apache Kafka](https://img.shields.io/badge/Apache_Kafka-231F20?style=for-the-badge&logo=apachekafka&logoColor=white)](https://kafka.apache.org/)
-[![PostgreSQL](https://img.shields.io/badge/PostgreSQL-316192?style=for-the-badge&logo=postgresql&logoColor=white)](https://www.postgresql.org/)
-[![Maven](https://img.shields.io/badge/Maven-C71A36?style=for-the-badge&logo=apachemaven&logoColor=white)](https://maven.apache.org/)
 [![Redis](https://img.shields.io/badge/Redis-DC382D?style=for-the-badge&logo=redis&logoColor=white)](https://redis.io/)
+[![PostgreSQL](https://img.shields.io/badge/PostgreSQL-316192?style=for-the-badge&logo=postgresql&logoColor=white)](https://www.postgresql.org/)
 
-*A backend system that simulates how large-scale e-commerce platforms handle inventory, orders, and asynchronous stock deduction during peak traffic — without overselling.*
+A distributed inventory and order orchestration platform that simulates how real e-commerce systems intelligently route inventory operations based on product demand — handling flash sale traffic without overselling, without crashing, and without slowing down.
 
 </div>
 
 ---
 
-## 🧩 The Problem
+## 💡 The Core Idea
 
-During flash sales, thousands of users attempt to purchase the same product simultaneously. A naive implementation leads to:
+Most inventory systems treat every order the same way:
 
-| Problem | Impact |
-|---|---|
-| ❌ Overselling inventory | Fulfillment failures & customer complaints |
-| ❌ Database contention | Slowdowns under load |
-| ❌ Race conditions | Inconsistent stock data |
-| ❌ Tight service coupling | Fragile, hard-to-scale architecture |
+```
+Order → Inventory Service → Database
+```
 
-FlashDrop solves this with **event-driven architecture**, **asynchronous processing**, and **microservice decoupling**.
+That works fine for 10 orders per second. It fails catastrophically for 10,000.
+
+FlashDrop takes a different approach. It **classifies every product** and routes each order through the right path for its traffic level.
+
+| | 🔥 Hot Product | ❄️ Cold Product |
+|---|---|---|
+| **What is it?** | Flash sale / limited edition item | Regular catalogue item |
+| **Traffic** | Thousands of orders per second | Normal, predictable volume |
+| **Examples** | iPhone launch, limited sneakers, festival sale | Water bottle, laptop bag, daily essentials |
+| **How processed** | Redis → Kafka → Database (async) | Direct to Inventory → Database (sync) |
+
+This single design decision is what separates a system that **survives** a flash sale from one that goes down.
 
 ---
 
-## 🏗️ System Architecture
+## 🚨 The Problem FlashDrop Solves
 
-<img width="1156" height="848" alt="Screenshot 2026-06-10 at 2 29 42 AM" src="https://github.com/user-attachments/assets/654d2e4e-0f86-49a6-aabc-338fef8db8e4" />
+Picture this: a new iPhone drops. 50,000 users hit "Buy Now" at the exact same second. A traditional system does this:
 
+```
+50,000 users
+     ↓
+Inventory Service  ← all 50,000 hammering simultaneously
+     ↓
+PostgreSQL         ← row-level locks, contention, timeouts
+```
+
+The result:
+
+- **Overselling** — 3,000 units sold, only 500 in stock
+- **Database meltdown** — lock contention brings everything down
+- **Race conditions** — two threads read `stock = 1`, both sell it
+- **Slow responses** — users wait 10+ seconds and rage-quit
+
+FlashDrop prevents all of this.
+
+---
+
+## 🏗️ How It Works
+
+<img width="1156" height="848" alt="Screenshot 2026-06-10 at 2 29 42 AM" src="https://github.com/user-attachments/assets/27dbcba2-82b5-4740-bd81-ccbb7e9bfd43" />
+
+
+```
+                         [ User ]
+                            |
+                            ▼
+                     [ API Gateway ]
+                            |
+              ┌─────────────┼─────────────┐
+              ▼             ▼             ▼
+         [Auth Svc]   [User Svc]    [Product Svc]
+
+
+                      [ Order Service ]
+                            |
+            ┌───────────────┴───────────────┐
+            │                               │
+     🔥 HOT PATH                     ❄️ COLD PATH
+            │                               │
+            ▼                               ▼
+    [ Redis ]                    [ Inventory Service ]
+    Atomic reservation                      │
+            │                               ▼
+            ▼                         [ PostgreSQL ]
+    [ Kafka ]
+    Async event
+            │
+            ▼
+    [ Inventory Service ]
+    Persist to DB
+            │
+            └──────────────┐
+                           ▼
+                  [ Kafka Notification ]
+                           │
+              ┌────────────┼────────────┐
+              ▼            ▼            ▼
+           Email          SMS        In-App
+```
+
+---
+
+## 🔥 Hot Path — Flash Sale Products
+
+When a user orders a hot product, **Redis handles the critical part** before any database is touched.
+
+**Step 1 — Order arrives**
+Order Service receives the request and checks: is this SKU marked HOT?
+
+**Step 2 — Redis atomic reservation**
+```
+Current stock in Redis: 100
+
+User A   →  DECRBY 1  →  99  ✓ Reserved
+User B   →  DECRBY 1  →  98  ✓ Reserved
+User C   →  DECRBY 1  →  97  ✓ Reserved
+...
+User 101 →  DECRBY 1  →  -1  ✗ REJECTED — out of stock
+```
+
+Redis processes these sequentially at memory speed. No race condition is possible. Overselling is mathematically impossible.
+
+**Step 3 — Kafka event published**
+Only after a successful reservation does the order flow forward:
+```json
+{
+  "orderId": "ORD123",
+  "userId": 101,
+  "skuId": 42,
+  "quantity": 2
+}
+```
+
+**Step 4 — Inventory Service consumes asynchronously**
+The database is updated in the background. The user already has their confirmation.
+
+**Step 5 — Notification sent**
+Email, SMS, and in-app notification fired via Kafka.
+
+### Why this wins
+- ✅ Redis handles burst traffic at microsecond speed
+- ✅ Database is protected — writes happen async, not under load
+- ✅ Zero overselling — atomic `DECRBY` is a single, indivisible operation
+- ✅ TTL on reservations means abandoned carts auto-release stock
+
+---
+
+## ❄️ Cold Path — Regular Products
+
+No Redis. No Kafka overhead. Just clean, direct processing.
+
+```
+Order Service
+      │
+      ▼
+Inventory Service  (synchronous stock check + deduction)
+      │
+      ▼
+PostgreSQL
+      │
+      ▼
+Kafka Notification  →  Email / SMS / In-App
+```
+
+### Why this is the right call
+- ✅ Simpler = fewer failure points
+- ✅ Lower infrastructure cost
+- ✅ Synchronous — user knows immediately if the order succeeded
+- ✅ No Redis warming, no consumer lag concerns
+
+---
+
+## 🎯 Product Classification
+
+Each product is tagged `HOT` or `COLD`. The Order Service reads this flag and routes accordingly.
+
+| Product | Classification | Why |
+|---|---|---|
+| iPhone 18 Launch Edition | 🔥 HOT | Limited stock, massive spike expected |
+| Limited Edition Air Jordan | 🔥 HOT | Sells out in seconds |
+| Festival Sale Items | 🔥 HOT | Predictable traffic surge |
+| Water Bottle | ❄️ COLD | Steady, low-volume demand |
+| Laptop Bag | ❄️ COLD | No spike risk |
+| Office Stationery | ❄️ COLD | Normal catalogue traffic |
 
 ---
 
 ## 📦 Services
 
 ### 🛒 Order Service
-- Accepts incoming purchase requests
-- Creates and persists orders
-- Publishes order events to Kafka
-- Fully decoupled from inventory logic
+The brain of FlashDrop. Receives every order, decides HOT vs COLD, and routes accordingly.
+- Accepts order requests
+- Classifies product type (HOT / COLD)
+- Triggers Redis reservation for hot products
+- Publishes Kafka events
 
 ### 📦 Inventory Service
-- Manages products, categories, and SKUs
-- Consumes Kafka events and deducts stock asynchronously
-- Maintains complete inventory transaction history
-- Supports hierarchical category structures
+The worker. Manages all product data and processes stock updates.
+- Product, Category, and SKU management
+- Consumes Kafka events (hot path)
+- Direct stock deduction (cold path)
+- Full inventory transaction history (`STOCK_IN` · `STOCK_OUT` · `RETURN` · `DAMAGED`)
+
+### ⚡ Redis
+The gatekeeper for flash sales. Sits in front of the database to absorb burst traffic.
+- Atomic stock reservation via `DECRBY`
+- Oversell prevention at memory speed
+- Reservation TTL — auto-releases stock on abandoned carts
+
+### 📨 Kafka
+The async backbone. Decouples services so a spike in orders doesn't spike the database.
+- Inventory update events (hot path)
+- Order confirmation events
+- Notification fanout (Email · SMS · In-App)
+
+### 🔐 Auth Service
+Issues and validates JWT tokens. Every request through the API Gateway is authenticated.
+
+### 👤 User Service
+Manages user profiles and registration — wired to Auth Service for the sign-up flow.
 
 ---
 
 ## 🗃️ Inventory Domain Model
 
 ```
-Category  (hierarchical, self-referencing)
-  └── Product  (common product info)
-        └── SKU  (sellable variant, e.g. TS001-BLK-M)
-              ├── Inventory         (current stock levels)
-              └── Inventory Transaction  (full audit trail)
-```
-
-**Example hierarchy:**
-```
-Fashion
- └── Men
-      └── T-Shirts
-           └── Nike Round Neck T-Shirt
-                 ├── TS001-BLK-M  →  Stock: 42
-                 ├── TS001-BLK-L  →  Stock: 18
-                 └── TS001-WHT-M  →  Stock: 55
-```
-
-**Transaction types:** `STOCK_IN` · `STOCK_OUT` · `RETURN` · `DAMAGED`
-
----
-
-## 🔄 Event-Driven Flow
-
-When a user places an order:
-
-```
-1. Order Service   →   creates and saves the order
-2. Kafka           →   receives the published OrderPlacedEvent
-3. Inventory Svc   →   consumes the event
-4. Stock           →   deducted atomically at the SKU level
-5. Transaction     →   recorded for audit trail
-```
-
-**Sample Kafka event payload:**
-```json
-{
-  "orderId": "ORD123",
-  "userId": 101,
-  "skuId": 1,
-  "quantity": 2
-}
+Category  (supports hierarchy — e.g. Fashion → Men → T-Shirts)
+  └── Product  (e.g. Nike Round Neck T-Shirt)
+        └── SKU  (e.g. TS001-BLK-M, TS001-BLK-L)
+              ├── Inventory            →  current stock level
+              └── InventoryTransaction →  full audit trail
+                        ├── STOCK_IN
+                        ├── STOCK_OUT
+                        ├── RETURN
+                        └── DAMAGED
 ```
 
 ---
@@ -109,59 +249,64 @@ When a user places an order:
 | Layer | Technology |
 |---|---|
 | Language | Java 21 |
-| Framework | Spring Boot, Spring Data JPA, Spring Kafka |
+| Framework | Spring Boot · Spring Data JPA · Spring Kafka |
+| Cache / Reservation | Redis |
 | Database | PostgreSQL |
 | Messaging | Apache Kafka |
 | Build | Maven |
-| Containerization | Docker *(planned)* |
+| Container | Docker *(planned)* |
 
 ---
 
-## ✅ Features
+## ✅ What's Built
 
-- [x] Event-driven order → inventory pipeline
+- [x] Hot / Cold product classification and routing
+- [x] Redis atomic stock reservation (`DECRBY` + oversell guard)
+- [x] Kafka-based async inventory deduction (hot path)
+- [x] Synchronous inventory deduction (cold path)
 - [x] SKU-level inventory tracking
+- [x] Full inventory transaction history
 - [x] Hierarchical category management
-- [x] Inventory audit trail with transaction history
-- [x] Kafka-based asynchronous stock deduction
-- [x] Extensible microservice architecture
+- [x] Notification service (Email · SMS · In-App)
+- [x] Auth Service with JWT
+- [x] Microservice architecture with API Gateway
 
 ---
 
-## 🗺️ Roadmap
+## 🗺️ What's Coming
 
-- [ ] Redis-based stock reservation (pre-checkout locking)
-- [ ] Distributed locking to prevent race conditions
-- [ ] API Gateway & Service Discovery
+- [ ] Reservation TTL expiry + stock restoration scheduler
+- [ ] Redis Lua scripts for complex atomic operations
+- [ ] Service Discovery
 - [ ] Docker Compose setup
 - [ ] Kubernetes deployment
-- [ ] Monitoring with Prometheus & Grafana
-- [ ] Saga pattern for order workflow
-- [ ] Dead Letter Queue (DLQ) for failed events
+- [ ] Distributed tracing
+- [ ] Prometheus + Grafana monitoring
 
 ---
 
-## 🎯 What This Project Explores
+## 🎯 Engineering Concepts Demonstrated
 
-FlashDrop is a hands-on study of real-world backend engineering concepts:
+FlashDrop explores how real backend systems at scale are designed:
 
-- **Distributed systems** — microservice coordination at scale
+- **Traffic-aware routing** — different processing paths based on product demand
+- **Redis atomic operations** — `DECRBY` as an oversell-proof reservation primitive
 - **Event-driven architecture** — loose coupling via Kafka
-- **Inventory management** — SKU-level tracking with full audit trail
-- **High-concurrency** — async deduction to handle burst traffic
-- **Scalable design** — built with horizontal scaling in mind
+- **Async vs sync tradeoffs** — choosing the right model per use case
+- **Inventory reservation pattern** — reserve first, persist later
+- **Distributed systems design** — handling concurrency without database locks
+- **SKU-level tracking** — granular stock management with full audit trail
 
 ---
 
 ## 🤝 Contributing
 
-Contributions, suggestions, and discussions are welcome!
-Feel free to open an issue or submit a pull request.
+Contributions, ideas, and discussions are welcome. Open an issue or submit a PR.
 
-If you find this project useful, please consider giving it a ⭐ — it helps others discover it!
+If this project is useful or interesting to you, please give it a ⭐ — it helps others find it.
 
 ---
 
 <div align="center">
-  <sub>Built to explore how real e-commerce backends survive flash sale chaos ⚡</sub>
+  <sub>Built to understand what actually happens inside e-commerce systems when millions of people want the same thing at the same time ⚡</sub>
 </div>
