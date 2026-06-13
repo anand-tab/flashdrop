@@ -1,9 +1,6 @@
 package com.flashdrop.productService.entity;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
+import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -25,9 +22,20 @@ public class Products {
     private String id;
     private String productId;
     private String productName;
+    @Column(columnDefinition = "TEXT")
     private String productDescription;
+
     private String productPrice;
+
+    @Column(length = 1000)
     private String productImageUrl;
+
+    @ElementCollection
+    @CollectionTable(
+            name = "product_image_urls",
+            joinColumns = @JoinColumn(name = "product_id")
+    )
+    @Column(name = "image_url", columnDefinition = "TEXT")
     private List<String> productImageUrlList;
     private String productCategory;
     private String productStatus;

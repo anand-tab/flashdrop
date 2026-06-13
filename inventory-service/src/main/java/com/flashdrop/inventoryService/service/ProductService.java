@@ -97,7 +97,7 @@ public class ProductService {
                             skuRequest.getSkuCode());
 
             Sku sku;
-
+                log.info(skuRequest.getProductImageUrl()+ " this is skurequest's imageurl ");
             if (existingSku.isPresent()) {
 
                 sku = existingSku.get();
@@ -113,6 +113,8 @@ public class ProductService {
 
                 inventoryRepository.save(inventory);
 
+                log.info(sku.getProductImageUrl() + " This is SKU's ImageURL");
+
             } else {
 
                 sku = Sku.builder()
@@ -126,6 +128,7 @@ public class ProductService {
                         .costPrice(skuRequest.getPrice())
                         .product(product)
                         .build();
+
 
                 sku = skuRepository.save(sku);
 
@@ -169,10 +172,11 @@ public class ProductService {
                     .productCategory(category.getName())
                     .productStatus(str1)
                     .productPrice(sku.getCostPrice())
-                    .productImageUrl(sku.getProductImageUrl())
-                    .productImageUrlList(sku.getProductImageUrlList())
+                    .productImageUrl(skuRequest.getProductImageUrl())
+                    .productImageUrlList(skuRequest.getProductImageUrlList())
                     .rating(4.5)
                     .build();
+            log.info(productServiceReq.getProductImageUrl()  + " ImageUrl");
             String str = productServiceClient.addProduct(productServiceReq);
         }
     }
