@@ -58,4 +58,11 @@ public class UserService {
     public Boolean verifyUser(String email) {
         return userRepository.findByEmail(email).isPresent();
     }
+
+    public UserResponse getAddressOfUser(String email) {
+        log.info("Getting the details of user "+ email);
+        User user = userRepository.findByEmail(email).orElseThrow(()->new RuntimeException("User not found"));
+        UserResponse userResponse = userMapper.toEntity(user);
+        return userResponse;
+    }
 }

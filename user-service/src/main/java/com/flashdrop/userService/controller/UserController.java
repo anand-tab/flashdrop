@@ -37,4 +37,14 @@ public class UserController {
     public ResponseEntity<Boolean> verifyUser(@PathVariable("email") String email){
         return ResponseEntity.ok(userService.verifyUser(email));
     }
+
+    @GetMapping("/address/{email}")
+    public ResponseEntity<UserResponse> getAddressOfUser(@PathVariable("email") String email){
+        try{
+            UserResponse userResponse= userService.getAddressOfUser(email);
+            return ResponseEntity.ok(userResponse);
+        }catch (Exception e){
+            throw  new RuntimeException(e.getMessage());
+        }
+    }
 }

@@ -31,7 +31,7 @@ public class Order {
 
     @Enumerated(EnumType.STRING)
     private OrderStatus status;  // ✅ new field
-
+    
     public enum OrderStatus {
         CONFIRMED,
         CANCELLED,

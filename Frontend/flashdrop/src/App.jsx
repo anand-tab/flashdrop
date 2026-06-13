@@ -6,6 +6,7 @@ import { Login } from './pages/Login';
 import Catalogue from './pages/Catalogue';
 import  Product  from './components/Product';
 import BuyNow from './components/BuyNow';
+import { Order } from './pages/Order';
 
 function App() {
   
@@ -17,6 +18,7 @@ function App() {
         <Route path="/catalogue" element={<Catalogue/>} />
         <Route path="/product/:productId" element={<Product/>} />
         <Route path="/buy/:productId" element={<BuyNow />} />
+        <Route path="/order/:productId" element={<Order />} />
       </Routes>
     </BrowserRouter>
   )

@@ -148,3 +148,151 @@
     border-radius: 10px;
     cursor: pointer;
 }
+
+
+.continue-btn {
+    width: 100%;
+    margin-top: 20px;
+    padding: 14px;
+    border: none;
+    border-radius: 10px;
+    cursor: pointer;
+    background: #ff9900;
+    color: #000;
+    font-weight: 700;
+    font-size: 16px;
+    transition: all 0.3s ease;
+}
+
+.continue-btn:hover {
+    background: #ffad33;
+    transform: translateY(-2px);
+}
+
+
+
+.popup-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+
+    background: rgba(0, 0, 0, 0.75);
+
+    display: flex;
+    justify-content: center;
+    align-items: center;
+
+    z-index: 9999;
+}
+
+
+
+.popup {
+    width: 420px;
+    max-width: 90%;
+
+    background: #1c1c1c;
+    color: white;
+
+    border-radius: 16px;
+    padding: 30px;
+
+    text-align: center;
+
+    box-shadow: 0 15px 40px rgba(0,0,0,0.4);
+
+    animation: popupFade 0.3s ease;
+}
+
+.popup h2 {
+    margin-bottom: 15px;
+}
+
+.popup p {
+    line-height: 1.6;
+    white-space: pre-line;
+    color: #d9d9d9;
+}
+
+.popup-btn {
+    margin-top: 20px;
+    border: none;
+    border-radius: 8px;
+
+    padding: 12px 24px;
+
+    cursor: pointer;
+
+    background: #ff9900;
+    color: black;
+
+    font-weight: bold;
+}
+
+.popup-btn:hover {
+    background: #ffad33;
+}
+
+
+
+@keyframes popupFade {
+    from {
+        opacity: 0;
+        transform: scale(0.9);
+    }
+
+    to {
+        opacity: 1;
+        transform: scale(1);
+    }
+}
+
+
+
+.success-popup h2 {
+    color: #4caf50;
+}
+
+.error-popup h2 {
+    color: #ff5252;
+}
+
+.warning-popup h2 {
+    color: #ffc107;
+}
+
+
+
+.loading {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+
+    min-height: 100vh;
+
+    background: #111;
+    color: white;
+}
+
+
+
+@media (max-width: 900px) {
+    .checkout-container {
+        flex-direction: column;
+    }
+
+    .product-card {
+        flex-direction: column;
+    }
+
+    .product-card img {
+        width: 100%;
+        max-width: 300px;
+    }
+
+    .checkout-right {
+        width: 100%;
+    }
+}

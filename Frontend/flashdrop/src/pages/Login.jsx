@@ -9,6 +9,9 @@ export const Login = () => {
     password: "",
   });
 
+  localStorage.setItem("email", formData.email);
+
+  console.log(localStorage.getItem("email"));
   const handleChange = (e) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
   };

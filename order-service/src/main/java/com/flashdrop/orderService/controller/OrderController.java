@@ -36,4 +36,6 @@ public class OrderController {
         log.info("Preload stock request received: {}", redisRequest);
         return ResponseEntity.ok(orderService.preLoadStock(redisRequest));
     }
+
+    public ResponseEntity<List<>>
 }
