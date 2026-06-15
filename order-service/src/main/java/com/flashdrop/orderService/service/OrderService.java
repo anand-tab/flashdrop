@@ -1,12 +1,10 @@
 package com.flashdrop.orderService.service;
 
 import com.flashdrop.orderService.client.InventoryServiceClient;
+import com.flashdrop.orderService.client.ProductServiceClient;
 import com.flashdrop.orderService.client.UserServiceClient;
 import com.flashdrop.orderService.config.RedisConfig;
-import com.flashdrop.orderService.dto.KafkaContext;
-import com.flashdrop.orderService.dto.OrderRequest;
-import com.flashdrop.orderService.dto.OrderResponse;
-import com.flashdrop.orderService.dto.RedisRequest;
+import com.flashdrop.orderService.dto.*;
 import com.flashdrop.orderService.entity.Order;
 import com.flashdrop.orderService.redis.InventoryResult;
 import com.flashdrop.orderService.redis.RedisInventoryService;
@@ -45,6 +43,9 @@ public class OrderService {
 
     @Autowired
     private InventoryServiceClient inventoryServiceClient;
+
+    @Autowired
+    private ProductServiceClient productServiceClient;
 
 
     public OrderResponse createOrder(OrderRequest request) {
@@ -189,5 +190,31 @@ public class OrderService {
                 keys,
                 args.toArray(new String[0])
         );
+    }
+
+    public List<OrderResponseToOrders> getAllOrders(String email) {
+
+        List<Order> orders = orderRepository.findByEmail(email).orElseThrow();
+        List<OrderResponseToOrders> list = new ArrayList<>();
+        for(Order order : orders){
+            String prodID = order.getProductId();
+            ProductResponse productResponse = productServiceClient.getProductById(prodID);
+
+            log.info("Fetched the details from productService");
+            OrderResponseToOrders  orderResponse = OrderResponseToOrders.builder()
+                    .orderId(order.getOrderId())
+                    .email(order.getEmail())
+                    .quantity(order.getQuantity())
+                    .totalPrice(order.getTotalPrice())
+                    .imageUrl(productResponse.getProductImageUrl())
+                    .productDescription(productResponse.getProductDescription())
+                    .orderDate(order.getOrderDate())
+                    .productId(productResponse.getProductId())
+                    .status(String.valueOf(order.getStatus()))
+                    .build();
+            list.add(orderResponse);
+            log.info("Fetched the details from orderService");
+        }
+        return list;
     }
 }

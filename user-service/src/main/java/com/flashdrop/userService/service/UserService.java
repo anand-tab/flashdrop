@@ -5,13 +5,11 @@ import com.flashdrop.userService.dto.UserRequest;
 import com.flashdrop.userService.dto.UserResponse;
 import com.flashdrop.userService.entity.User;
 import com.flashdrop.userService.repository.UserRepository;
-import jdk.jshell.spi.ExecutionControl;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
 import java.util.List;
 
 @Service
@@ -64,5 +62,18 @@ public class UserService {
         User user = userRepository.findByEmail(email).orElseThrow(()->new RuntimeException("User not found"));
         UserResponse userResponse = userMapper.toEntity(user);
         return userResponse;
+    }
+
+    public String updateUser(UserRequest userRequest, String email) {
+        log.info("UserService updateUser");
+        User user = userRepository.findByEmail(email).orElseThrow(()->new RuntimeException("User not found"));
+        user.setFirstName(userRequest.getFirstName());
+        user.setLastName(userRequest.getLastName());
+        user.setAddress(userRequest.getAddress());
+        user.setPhoneNumber(userRequest.getPhoneNumber());
+        userRepository.save(user);
+        log.info("User saved");
+
+        return "User updated.";
     }
 }

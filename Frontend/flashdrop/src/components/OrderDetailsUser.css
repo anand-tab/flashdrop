@@ -1,0 +1,417 @@
+/* Container Base Styles */
+.orders-container {
+  max-width: 1050px;
+  margin: 40px auto;
+  padding: 0 20px;
+  background-color: #0b0b0b; /* Deep background matching homepage screenshot */
+  color: #ffffff;
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+}
+
+.orders-header {
+  margin-bottom: 35px;
+}
+
+.orders-header h1 {
+  font-size: 2.1rem;
+  font-weight: 600;
+  margin-bottom: 8px;
+  letter-spacing: -0.5px;
+}
+
+.orders-header p {
+  color: #888888;
+  font-size: 0.95rem;
+}
+
+.orders-list {
+  display: flex;
+  flex-direction: column;
+}
+
+/* Amazon Style Dual Box Layout Structuring */
+.amazon-style-card {
+  background-color: #141414; /* Deep gray interior card body */
+  border: 1px solid #282828;
+  border-radius: 8px;
+  overflow: hidden;
+  margin-bottom: 22px;
+  cursor: pointer;
+  transition: border-color 0.2s ease, box-shadow 0.2s ease;
+}
+
+.amazon-style-card:hover {
+  border-color: #3e3e3e;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.4);
+}
+
+/* Metadata Bar */
+.amazon-card-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background-color: #1e1e1e; /* Distinct header tint layer */
+  padding: 14px 20px;
+  border-bottom: 1px solid #282828;
+}
+
+.header-left-meta {
+  display: flex;
+  gap: 35px;
+}
+
+.meta-group {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.meta-label {
+  font-size: 0.7rem;
+  color: #7c7c7c;
+  font-weight: 600;
+  letter-spacing: 0.5px;
+}
+
+.meta-value {
+  font-size: 0.88rem;
+  color: #cccccc;
+}
+
+.total-value {
+  font-weight: 600;
+  color: #ffffff;
+}
+
+.id-value {
+  color: #3b82f6;
+}
+
+.user-email-truncate {
+  max-width: 160px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.text-right {
+  text-align: right;
+}
+
+/* Core Bounding Card Area */
+.amazon-card-body {
+  padding: 22px;
+}
+
+.status-announcement {
+  margin-bottom: 16px;
+}
+
+.status-title {
+  font-size: 1.15rem;
+  font-weight: 700;
+  margin-bottom: 4px;
+}
+
+.status-subtext {
+  font-size: 0.88rem;
+  color: #999999;
+  line-height: 1.4;
+}
+
+/* Item Contents Grid Row */
+.amazon-item-row {
+  display: flex;
+  gap: 20px;
+  align-items: flex-start;
+}
+
+.amazon-item-image {
+  width: 90px;
+  height: 90px;
+  object-fit: contain;
+  background-color: #1a1a1a;
+  border: 1px solid #2b2b2b;
+  border-radius: 6px;
+  padding: 6px;
+  cursor: pointer;
+  transition: border-color 0.15s ease;
+}
+
+.amazon-item-image:hover {
+  border-color: #3b82f6;
+}
+
+.amazon-item-details {
+  flex: 1;
+}
+
+.product-title-link {
+  font-size: 0.98rem;
+  font-weight: 500;
+  color: #3b82f6; /* Premium light interaction hyperlink hue */
+  cursor: pointer;
+  line-height: 1.4;
+  display: inline-block;
+  margin-bottom: 6px;
+}
+
+.product-title-link:hover {
+  text-decoration: underline;
+  color: #60a5fa;
+}
+
+.amazon-qty {
+  font-size: 0.85rem;
+  color: #7c7c7c;
+  margin-bottom: 12px;
+}
+
+.view-details-action-btn {
+  background-color: #222222;
+  border: 1px solid #3a3a3a;
+  color: #dddddd;
+  padding: 6px 14px;
+  font-size: 0.8rem;
+  border-radius: 4px;
+  cursor: pointer;
+  font-weight: 500;
+}
+
+.view-details-action-btn:hover {
+  background-color: #2c2c2c;
+  color: #ffffff;
+  border-color: #555555;
+}
+
+.amazon-card-footer {
+  padding: 10px 20px;
+  border-top: 1px dashed #222222;
+  background-color: #141414;
+}
+
+.click-hint {
+  font-size: 0.78rem;
+  color: #555555;
+  font-style: italic;
+}
+
+/* --- DYNAMIC ANNOUNCEMENT TEXT COLOR MODULATORS --- */
+.text-cancelled { color: #f87171; }
+.text-delivered { color: #4ade80; }
+.text-processing { color: #60a5fa; }
+.text-pending { color: #fbbf24; }
+
+/* =======================================================
+   --- INTERACTIVE SYSTEM PAGINATION STYLING ---
+   ======================================================= */
+.pagination-wrapper {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 8px;
+  margin: 40px 0;
+}
+
+.pagination-btn {
+  background-color: #141414;
+  border: 1px solid #2d2d2d;
+  color: #aaaaaa;
+  padding: 8px 14px;
+  font-size: 0.88rem;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.pagination-btn:hover:not(:disabled) {
+  background-color: #222222;
+  color: #ffffff;
+}
+
+.pagination-btn:disabled {
+  opacity: 0.3;
+  cursor: not-allowed;
+}
+
+.num-btn {
+  min-width: 38px;
+}
+
+.active-page {
+  background-color: #ffffff !important;
+  color: #000000 !important;
+  border-color: #ffffff !important;
+  font-weight: 600;
+}
+
+/* =======================================================
+   --- FULL SCREEN INTERACTIVE POPUP SHEET MODAL ---
+   ======================================================= */
+.modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.85);
+  backdrop-filter: blur(5px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 2000;
+  padding: 20px;
+}
+
+.modal-content {
+  background-color: #111111;
+  border: 1px solid #2a2a2a;
+  border-radius: 12px;
+  width: 100%;
+  max-width: 640px;
+  padding: 30px;
+  position: relative;
+  color: #ffffff;
+  box-shadow: 0 10px 40px rgba(0,0,0,0.8);
+  animation: modalSlideUp 0.2s ease-out;
+}
+
+@keyframes modalSlideUp {
+  from { opacity: 0; transform: translateY(15px) scale(0.98); }
+  to { opacity: 1; transform: translateY(0) scale(1); }
+}
+
+.close-modal-btn {
+  position: absolute;
+  top: 15px;
+  right: 20px;
+  background: none;
+  border: none;
+  color: #777777;
+  font-size: 1.8rem;
+  cursor: pointer;
+}
+
+.close-modal-btn:hover {
+  color: #ffffff;
+}
+
+.modal-divider {
+  border: 0;
+  height: 1px;
+  background-color: #262626;
+  margin: 18px 0;
+}
+
+.modal-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 20px;
+}
+
+.modal-section h4 {
+  color: #666666;
+  text-transform: uppercase;
+  font-size: 0.72rem;
+  letter-spacing: 0.5px;
+  margin-bottom: 8px;
+}
+
+.modal-section p {
+  font-size: 0.9rem;
+  margin-bottom: 5px;
+  color: #e2e2e2;
+}
+
+.address-placeholder {
+  color: #d1d1d1;
+}
+
+.address-placeholder.sub-info {
+  color: #666666;
+  font-size: 0.8rem;
+  margin-top: 4px;
+}
+
+.modal-item-image {
+  width: 85px;
+  height: 85px;
+  object-fit: contain;
+  background-color: #161616;
+  border-radius: 6px;
+}
+
+.modal-item-desc-text {
+  font-size: 0.85rem;
+  color: #999999 !important;
+  line-height: 1.4;
+}
+
+.modal-item-price {
+  text-align: right;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  height: 85px;
+}
+
+.modal-item-price p {
+  font-size: 0.82rem;
+  color: #666666;
+}
+
+.final-price {
+  font-size: 1.15rem;
+  color: #ffffff;
+}
+
+/* State Handlers Layout */
+.state-message {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  min-height: 45vh;
+  gap: 15px;
+  text-align: center;
+}
+
+.spinner {
+  width: 35px;
+  height: 35px;
+  border: 3px solid #222222;
+  border-top-color: #ffffff;
+  border-radius: 50%;
+  animation: rotateSpinner 0.8s linear infinite;
+}
+
+@keyframes rotateSpinner {
+  to { transform: rotate(360deg); }
+}
+
+.error-text {
+  color: #f87171;
+}
+
+/* Responsive Scaling Viewports */
+@media (max-width: 768px) {
+  .amazon-card-header {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 12px;
+  }
+  .header-left-meta {
+    gap: 20px;
+    flex-wrap: wrap;
+  }
+  .text-right {
+    text-align: left;
+  }
+  .hide-mobile {
+    display: none;
+  }
+  .modal-grid {
+    grid-template-columns: 1fr;
+    gap: 15px;
+  }
+}

@@ -2,16 +2,16 @@ package com.flashdrop.orderService.controller;
 
 import com.flashdrop.orderService.dto.OrderRequest;
 import com.flashdrop.orderService.dto.OrderResponse;
+import com.flashdrop.orderService.dto.OrderResponseToOrders;
 import com.flashdrop.orderService.dto.RedisRequest;
 import com.flashdrop.orderService.entity.Order;
 import com.flashdrop.orderService.service.OrderService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 
 @Slf4j
@@ -37,5 +37,15 @@ public class OrderController {
         return ResponseEntity.ok(orderService.preLoadStock(redisRequest));
     }
 
-    public ResponseEntity<List<>>
-}
+
+    @GetMapping("/orders/{email}")
+    public ResponseEntity<List<OrderResponseToOrders>> getAllOrders(@PathVariable("email") String email ) {
+        try{
+            List<OrderResponseToOrders> orderResponseToOrders = orderService.getAllOrders(email);
+            return ResponseEntity.ok(orderResponseToOrders);
+        }catch (Exception e){
+            throw new RuntimeException(e.getMessage());
+        }
+
+    }
+ }

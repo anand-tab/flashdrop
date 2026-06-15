@@ -47,4 +47,14 @@ public class UserController {
             throw  new RuntimeException(e.getMessage());
         }
     }
+
+    @PutMapping("/update/{email}")
+    public ResponseEntity<String> updateUser(@RequestBody UserRequest userRequest , @PathVariable String email){
+        try{
+             String str = userService.updateUser(userRequest,email);
+            return ResponseEntity.ok(str);
+        }catch (Exception e){
+            throw  new RuntimeException(e.getMessage());
+        }
+    }
 }
