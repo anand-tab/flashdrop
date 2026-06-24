@@ -18,3 +18,21 @@ spring:
 jwt:
   secret: 9fKx3LqP7mZtR2vX8nBcY5wHsU4jQa1eTf6GdWp0rTy9UiOlVk3Nz7MhSe2AxCd
   expiration: 3600000
+management:
+  endpoints:
+    web:
+      exposure:
+        include: "*"
+
+  endpoint:
+    health:
+      show-details: always
+
+  prometheus:
+    metrics:
+      export:
+        enabled: true
+
+  metrics:
+    tags:
+      application: ${spring.application.name}

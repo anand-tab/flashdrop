@@ -41,3 +41,22 @@ logging:
   level:
     org.springframework.kafka: DEBUG
     org.apache.kafka: WARN
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: "*"
+
+  endpoint:
+    health:
+      show-details: always
+
+  prometheus:
+    metrics:
+      export:
+        enabled: true
+
+  metrics:
+    tags:
+      application: ${spring.application.name}
