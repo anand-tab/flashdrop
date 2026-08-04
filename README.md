@@ -80,6 +80,7 @@ FlashDrop prevents all of this.
 
                       [ Order Service ]
                             |
+                            ▼
               Check Product in Redis Cache
               (EXISTS stock:<productId> ?)
             ┌───────────────┴───────────────┐
