@@ -80,9 +80,14 @@ FlashDrop prevents all of this.
 
                       [ Order Service ]
                             |
+              Check Product in Redis Cache
+              (EXISTS stock:<productId> ?)
             ┌───────────────┴───────────────┐
             │                               │
-     🔥 HOT PATH                     ❄️ COLD PATH
+            YES                            NO
+            │                               │
+            │                               │
+     🔥 HOT Product PATH            ❄️ COLD Product PATH
             │                               │
             ▼                               ▼
     [ Redis ]                    [ Inventory Service ]
