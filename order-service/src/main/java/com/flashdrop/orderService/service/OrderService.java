@@ -391,6 +391,9 @@ public class OrderService {
         List<Order> orders = orderRepository.findByEmail(email).orElseThrow();
         List<OrderResponseToOrders> list = new ArrayList<>();
         for(Order order : orders){
+            if(order==null){
+                continue;
+            }
             String prodID = order.getProductId();
             ProductResponse productResponse = productServiceClient.getProductById(prodID);
 
