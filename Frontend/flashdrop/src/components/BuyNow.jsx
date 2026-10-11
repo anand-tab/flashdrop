@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useRef,useEffect, useState } from "react";
 import "./BuyNow.css";
 import { useNavigate, useParams } from "react-router-dom";
 import { apiFetch } from "../Api";
@@ -6,6 +6,9 @@ import flashdrop from "/Users/sumanshuanand/Documents/flashdrop/Frontend/flashdr
 
 
 const BuyNow = () => {
+    const idempotencyKey = useRef(null);
+    const [placing, setPlacing] = useState(false);
+
     const navigate = useNavigate();
     const { productId } = useParams();
 
@@ -30,6 +33,11 @@ const BuyNow = () => {
         navigate("/catalogue");
     };
 
+    useEffect(() => {
+        idempotencyKey.current = null;
+    },[productId ,quantity, couponCode ,discount]);
+
+    
     // FETCH PRODUCT
     useEffect(() => {
         const fetchProduct = async () => {
@@ -118,12 +126,18 @@ const BuyNow = () => {
     console.log("Email from localStorage:", email);
     //Place Order
     const placeOrder = async () => {
+        if (placing) return;                       // ignore double taps
+        setPlacing(true);
+
+        if (!idempotencyKey.current) {
+            idempotencyKey.current = crypto.randomUUID();
+        }
         try {
             const response = await apiFetch(
                 `http://localhost:3002/api/order`,
                 {
                     method: "POST",
-                    headers: { "Content-Type": "application/json" },
+                    headers: { "Content-Type": "application/json" , "Idempotency-Key": idempotencyKey.current},
                     body: JSON.stringify({
                         productId,
                         quantity,
@@ -136,6 +150,11 @@ const BuyNow = () => {
             const data = await response.json();
 
             console.log("Order Response:", data);
+
+            // 409 = same key still being processed, so keep the key and let the user retry
+            if (response.status !== 409 && response.status < 500) {
+                idempotencyKey.current = null;     // definitive answer, next order gets a new key
+            }
 
             if (!response.ok) {
                 setOrderMessage(data.message || "Order failed");
@@ -192,9 +211,11 @@ Order ID: ${data.orderId}
 
         } catch (error) {
             setPopupTitle("❌ Order Failed");
-            setPopupMessage(data.message);
+            setPopupMessage(error.message || "Something went wrong please try again.");
             setPopupClass("error-popup");
             setShowPopup(true);
+        }finally {
+            setPlacing(false);
         }
 
 
@@ -300,8 +321,8 @@ Order ID: ${data.orderId}
                         <span>₹ {total}</span>
                     </div>
 
-                    <button className="continue-btn" onClick={() => placeOrder()}>
-                        Place Order
+                    <button className="continue-btn" onClick={placeOrder} disabled={placing}>
+                        {placing ? "Placing Order..." : "Place Order"}
                     </button>
                 </div>
             </div>

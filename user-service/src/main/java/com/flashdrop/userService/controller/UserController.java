@@ -49,7 +49,7 @@ public class UserController {
     }
 
     @PutMapping("/update/{email}")
-    public ResponseEntity<String> updateUser(@RequestBody UserRequest userRequest , @PathVariable String email){
+    public ResponseEntity<String> updateUser(@RequestBody UserRequest userRequest , @PathVariable("email") String email){
         try{
              String str = userService.updateUser(userRequest,email);
             return ResponseEntity.ok(str);

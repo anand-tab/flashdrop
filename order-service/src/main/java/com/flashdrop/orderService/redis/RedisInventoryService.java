@@ -18,6 +18,12 @@ public class RedisInventoryService {
 
     private static final String KEY_PREFIX = "flash:";
 
+
+    public void restoreStock(String productId, int quantity) {
+        String key = KEY_PREFIX + productId;
+        redisTemplate.opsForValue().increment(key, quantity);
+    }
+
     public InventoryResult checkAndDeduct(String productId, int requestedQty) {
         String key = KEY_PREFIX + productId;
 

@@ -24,10 +24,15 @@ public class OrderController {
 
 
     @PostMapping
-    public ResponseEntity<OrderResponse> createOrder(@RequestBody OrderRequest request) {
-        log.info("Order request received: {}", request);
-        OrderResponse response = orderService.createOrder(request);
-        return ResponseEntity.ok(response);
+    public ResponseEntity<OrderResponse> createOrder(@RequestHeader("Idempotency-Key") String idempotencyKey,@RequestBody OrderRequest request) {
+        try {
+            log.info("Order request received: {}", request);
+            OrderResponse response = orderService.createOrder(request, idempotencyKey);
+            return ResponseEntity.ok(response);
+        }
+        catch(Exception e) {
+            throw new RuntimeException(e.getMessage());
+        }
     }
 
 

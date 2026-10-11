@@ -27,7 +27,8 @@ public class Order {
     @CreationTimestamp
     private LocalDateTime orderDate;
 
-
+    @Column(name = "idempotency_key", length = 64)
+    private String idempotencyKey;
 
     @Enumerated(EnumType.STRING)
     private OrderStatus status;  // ✅ new field

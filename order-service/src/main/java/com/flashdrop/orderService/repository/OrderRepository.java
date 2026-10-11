@@ -13,4 +13,6 @@ public interface OrderRepository extends JpaRepository<Order, String> {
 
 
     Optional<List<Order>> findByEmail(String email);
+
+    Optional<Order> findByEmailAndIdempotencyKey(String email, String idempotencyKey);
 }
